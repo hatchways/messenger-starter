@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
@@ -24,6 +25,7 @@ const ActiveChat = ({
   conversations,
   activeConversation,
   postMessage,
+  setConversations,
 }) => {
   const classes = useStyles();
 
@@ -36,6 +38,35 @@ const ActiveChat = ({
   const isConversation = (obj) => {
     return obj !== {} && obj !== undefined;
   };
+
+  useEffect(() => {
+    const seeMessages = async () => {
+      const { data } = await axios.post("/api/messages/read", {
+        conversationId: conversation?.id,
+      });
+      // console.log(data);
+    };
+
+    const fetchConversations = async () => {
+      try {
+        const { data } = await axios.get("/api/conversations");
+        setConversations(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    // update messages.seen to be true here
+    // send conversation id to /read
+
+    if (!!conversation) {
+      seeMessages();
+
+      if (!user.isFetching) {
+        fetchConversations();
+      }
+    }
+  }, [activeConversation, setConversations, user]);
 
   return (
     <Box className={classes.root}>

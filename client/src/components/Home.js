@@ -225,6 +225,7 @@ const Home = ({ user, logout }) => {
           setActiveChat={setActiveChat}
         />
         <ActiveChat
+          setConversations={setConversations}
           activeConversation={activeConversation}
           conversations={conversations}
           user={user}
